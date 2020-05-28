@@ -17,7 +17,6 @@ module.exports = {
       WHERE email = $1;
       `, [email])
       .then((res) => {
-        console.log('Executed Query',res.rows);
         return res.rows[0]
       });
   }, 
@@ -30,7 +29,6 @@ module.exports = {
       WHERE id = $1;
       `, [id])
       .then((res) => {
-        console.log(res.rows)
         return res.rows[0]
       });
   },
@@ -39,7 +37,10 @@ module.exports = {
     return pool.query(`
     INSERT INTO users(name, email, password)
     VALUES ($1, $2, $3) RETURNING *;
-    `, [user.name, user.email, user.password]);
+    `, [user.name, user.email, user.password])
+    .then((res) => {
+      return res.row[0]
+    });
   },
 
   getAllReservations: function(guest_id, limit = 10) {
@@ -55,7 +56,6 @@ module.exports = {
     LIMIT $2;
     `, [guest_id, limit])
     .then((res) => {
-      console.log(res.rows)
       return res.rows
     });
   },
@@ -66,7 +66,7 @@ module.exports = {
     let queryString = `
       SELECT properties.*, AVG(property_reviews.rating) AS average_rating 
       FROM properties
-      JOIN property_reviews
+      LEFT JOIN property_reviews
       ON properties.id = property_id
       `;
   
@@ -101,7 +101,6 @@ module.exports = {
     ORDER BY cost_per_night
     LIMIT $${queryParams.length}  
     `;
-    console.log(queryParams, queryString)
     return pool.query(queryString, queryParams)
     .then(res => res.rows);
   },
@@ -115,8 +114,6 @@ module.exports = {
     `
     console.log(queryString, queryParams);
     return pool.query(queryString, queryParams)
-    .then((res) => {
-      return res.rows[0];
-    });
+    .then((res) => res.rows[0]);
   }
 }
