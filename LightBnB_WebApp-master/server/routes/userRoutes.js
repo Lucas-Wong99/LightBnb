@@ -18,6 +18,7 @@ module.exports = function(router, database) {
     .catch(e => res.send(e));
   });
 
+
   /**
    * Check if a user exists with a given username and password
    * @param {String} email

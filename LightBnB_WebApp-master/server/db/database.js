@@ -118,5 +118,20 @@ module.exports = {
     console.log(queryString, queryParams);
     return pool.query(queryString, queryParams)
     .then((res) => res.rows[0]);
+  },
+  
+  // Will be passed an object containing key/value pairs of the property_id, guest_id start_date, end_date
+  addReservation: function(reservation) {
+    const { property_id, guest_id, start_date, end_date } = reservation;
+    const queryParams = [property_id, guest_id, start_date, end_date];
+    
+    const queryString = 
+    `
+    INSERT INTO reservations(property_id, guest_id, start_date, end_date)
+    VALUES ($1, $2, $3, $4) RETURNING *;
+    `
+
+    return pool.query(queryString, queryParams)
+    .then((res) => res.rows[0]);
   }
 }

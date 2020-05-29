@@ -35,6 +35,24 @@ module.exports = function(router, database) {
         res.send(e)
       });
   });
+    
+  // Creates a new reservation
+  router.post('/reservation', (req, res) => {
+    const userId = req.session.userId;
+    const reservation = req.body;
+    // const reservation = {property_id: 1, start_date: '2020/01/23', end_date: '2020/02/15'}
+    // const userId = 1;
+
+    database.addReservation({...reservation, guest_id: userId})
+    .then(reservation => {
+      console.log(reservation)
+      res.send(reservation);
+    })
+    .catch(e => {
+      console.error(e);
+      res.send(e)
+    });
+  })
 
   return router;
 }

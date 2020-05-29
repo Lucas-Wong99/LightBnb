@@ -1,3 +1,4 @@
+let propertyID = 0;
 $(() => {
   window.propertyListing = {};
   
@@ -21,11 +22,22 @@ $(() => {
             <div class="property-listing__rating">${Math.round(property.average_rating * 100) / 100}/5 stars</div>
             <div class="property-listing__price">$${property.cost_per_night/100.0}/night</div>
           </footer>
+          ${isReservation ?
+            ``
+            : `<button class="reservation_button" value="${property.id}">Make Reservation</button>`}
         </section>
       </article>
     `
   }
+  
+  $("main").on('click', ".reservation_button", (event) => {
+    console.log(event)
+    propertyID = event.target.value
+    console.log(propertyID)
+    views_manager.show('newReservation');
+  });
 
   window.propertyListing.createListing = createListing;
-
 });
+
+
